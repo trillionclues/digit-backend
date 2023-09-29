@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 const { generateToken } = require('../config/jwtToken');
 const { validateMongoDBId } = require('../utils/validateMongoId');
 const { generateRefreshToken } = require('../config/refreshToken');
+const jwt = require('jsonwebtoken');
 
 // create new user
 const createUser = asyncHandler(async (req, res) => {
@@ -53,9 +54,52 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
 });
 
 // handle refresh token
-const handleRefreshToken = asyncHandler(async (req, res) => {
+const handleTokenRefresh = asyncHandler(async (req, res) => {
+  // get token from https headers
   const cookie = req.cookies;
-  console.log(cookie);
+
+  if (!cookie?.refreshToken) throw new Error('No refresh token in Cookies!');
+  const refreshToken = cookie.refreshToken;
+
+  // find the exact user with the refresh token
+  const user = await User.findOne({ refreshToken });
+  if (!user) throw new Error('No refresh token found in DB or no match');
+
+  // if there is match, verify with jwt
+  jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
+    if (err || user.id !== decoded.id) {
+      throw new Error('There is something wrong with the refresh token');
+    }
+
+    const accessToken = generateToken(user?._id);
+    res.json({ accessToken });
+  });
+});
+
+// logout functionality
+const handleLogout = asyncHandler(async (req, res) => {
+  // get token from cookies
+  const refreshToken = req.cookies.refreshToken;
+
+  // // find the exact user with the refresh token
+  // const user = await User.findOne({ refreshToken });
+
+  if (!refreshToken) {
+    res.clearCookie('refreshToken', {
+      httpsOnly: true,
+      secure: true,
+    });
+    return res.sendStatus(204); //No content
+  }
+
+  // find exact user with the refresh token and clear token
+  await User.findOneAndUpdate({ refreshToken }, { refreshToken: '' });
+
+  res.clearCookie('refreshToken', {
+    httpsOnly: true,
+    secure: true,
+  });
+  res.sendStatus(204);
 });
 
 // Get all user
@@ -168,11 +212,12 @@ const unblockUser = asyncHandler(async (req, res) => {
 module.exports = {
   createUser,
   loginUserCtrl,
-  handleRefreshToken,
+  handleTokenRefresh,
   updateUser,
   getAllUsers,
   getSingleUser,
   deleteUser,
   blockUser,
   unblockUser,
+  handleLogout,
 };
