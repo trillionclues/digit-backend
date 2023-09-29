@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 const { generateToken } = require('../config/jwtToken');
+const { validateMongoDBId } = require('../utils/validateMongoId');
 
 // create new user
 const createUser = asyncHandler(async (req, res) => {
@@ -48,7 +49,11 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 // update a user
 const updateUser = asyncHandler(async (req, res) => {
+  // const {id} = req.params
+
+  // only allow verified admin instead to update
   const { _id } = req.user;
+  validateMongoDBId(_id);
   try {
     const updatedUser = await User.findByIdAndUpdate(
       _id,
@@ -71,6 +76,9 @@ const updateUser = asyncHandler(async (req, res) => {
 // Get a single user
 const getSingleUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
+  // validate mongoid
+  validateMongoDBId(id);
   try {
     const getUser = await User.findById(id);
     res.json({ getUser });
@@ -82,6 +90,7 @@ const getSingleUser = asyncHandler(async (req, res) => {
 // Delete a user
 const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDBId(id);
   try {
     const deleteSingleUser = await User.findByIdAndDelete(id);
     res.json({ deleteSingleUser });
@@ -90,6 +99,51 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
+// block user
+const blockUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoDBId(id);
+  try {
+    const blocked = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked: true,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({
+      message: 'User blocked!',
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// unblock user
+const unblockUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoDBId(id);
+  try {
+    const unblocked = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked: false,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({
+      message: 'User unblocked!',
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// exports
 module.exports = {
   createUser,
   loginUserCtrl,
@@ -97,4 +151,6 @@ module.exports = {
   getAllUsers,
   getSingleUser,
   deleteUser,
+  blockUser,
+  unblockUser,
 };
