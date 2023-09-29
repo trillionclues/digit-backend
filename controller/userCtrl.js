@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 const { generateToken } = require('../config/jwtToken');
 const { validateMongoDBId } = require('../utils/validateMongoId');
+const { generateRefreshToken } = require('../config/refreshToken');
 
 // create new user
 const createUser = asyncHandler(async (req, res) => {
@@ -20,11 +21,25 @@ const createUser = asyncHandler(async (req, res) => {
 
 // login controller
 const loginUserCtrl = asyncHandler(async (req, res) => {
+  // get email and password from request body
   const { email, password } = req.body;
 
   // check if user exists and compare with encrypted passeord
   const findUser = await User.findOne({ email });
   if (findUser && (await findUser.isPasswordMatched(password))) {
+    // generate a refreshToken for user
+    const refreshToken = await generateRefreshToken(findUser?._id);
+    const updateUserStatus = await User.findByIdAndUpdate(
+      findUser.id,
+      {
+        refreshToken: refreshToken,
+      },
+      { new: true }
+    );
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000, //cookie expires in 72hrs to match config
+    });
     res.json({
       _id: findUser?._id,
       firstname: findUser?.firstname,
@@ -35,6 +50,12 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
   } else {
     throw new Error('Invalid credentials');
   }
+});
+
+// handle refresh token
+const handleRefreshToken = asyncHandler(async (req, res) => {
+  const cookie = req.cookies;
+  console.log(cookie);
 });
 
 // Get all user
@@ -147,6 +168,7 @@ const unblockUser = asyncHandler(async (req, res) => {
 module.exports = {
   createUser,
   loginUserCtrl,
+  handleRefreshToken,
   updateUser,
   getAllUsers,
   getSingleUser,
