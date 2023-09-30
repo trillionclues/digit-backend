@@ -93,9 +93,28 @@ const getAllProducts = asyncHandler(async (req, res) => {
     queryObj2 = excludeFields.forEach((el) => delete queryObj[el]);
 
     // console.log(queryObj, req.query);
-    const query = Product.find(JSON.parse(queryStr));
+    let query = Product.find(JSON.parse(queryStr));
 
     // SORTING
+    // localhost:5000/api/product/?sort=category,brand
+    if (req.query.sort) {
+      const sortFields = req.query.sort.split(',').map((field) => {
+        if (field.startsWith('-')) {
+          return [`-${field.slice(1)}`]; // Sort in descending order
+        }
+        return [field]; // Sort in ascending order
+      });
+
+      const flattendSortFields = sortFields.reduce(
+        (acc, val) => acc.concat(val),
+        []
+      );
+      console.log(flattendSortFields);
+
+      query = query.sort(flattendSortFields);
+    } else {
+      query = query.sort('-createdAt');
+    }
 
     const product = await query;
     res.json(product);
