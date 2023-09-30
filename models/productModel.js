@@ -23,16 +23,20 @@ const productSchema = Schema(
       required: true,
     },
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
+      type: String,
+      required: true,
+      // type: mongoose.Schema.Types.ObjectId,
+      // ref: 'Category',
     },
     brand: {
       type: String,
-      enum: ['Apple', 'Samsung', 'Lenovo'],
+      required: true,
+      // enum: ['Apple', 'Samsung', 'Lenovo'],
     },
     sold: {
       type: Number,
       default: 0,
+      // select: false,  hide schema from user
     },
     quantity: {
       type: Number,
@@ -43,7 +47,8 @@ const productSchema = Schema(
     },
     color: {
       type: String,
-      enum: ['Black', 'Brown', 'Red'],
+      required: true,
+      // enum: ['Black', 'Brown', 'Red'],
     },
     ratings: [
       {
