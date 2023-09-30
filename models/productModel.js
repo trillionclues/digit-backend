@@ -34,7 +34,10 @@ const productSchema = Schema(
       type: Number,
       default: 0,
     },
-    quantity: Number,
+    quantity: {
+      type: Number,
+      required: true,
+    },
     images: {
       type: Array,
     },

@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const { dbConnect } = require('./config/dbConnect');
 const authRouter = require('./routes/authRoute');
+const productRouter = require('./routes/productRoute');
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const cookieParser = require('cookie-parser');
 const app = express();
@@ -15,6 +16,7 @@ app.use(cookieParser());
 
 // routes
 app.use('/api/user', authRouter);
+app.use('/api/product', productRouter);
 
 // NB: All middleware comes after the routes
 app.use(notFound);
