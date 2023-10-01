@@ -83,7 +83,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
   try {
     // handle queryStrings for FILTERING...
     // eg localhost:5000/api/product/?brand=Apple&price[gte]=9000&price[lte]=20000
-    // destructure query object
     const queryObj = { ...req.query };
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
     // remove any of the fields in the array that match the query
@@ -91,7 +90,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte)\b/g, (match) => `$${match}`);
 
-    // console.log(queryObj, req.query);
     let query = Product.find(JSON.parse(queryStr));
 
     // SORTING
@@ -102,6 +100,29 @@ const getAllProducts = asyncHandler(async (req, res) => {
       console.log(sortBy, req.query);
     } else {
       query = query.sort('-createdAt');
+    }
+
+    // limiting the fields
+    // eg localhost:5000/api/product/?fields=title,price,category
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v'); // hide the mongodb (__v) property
+    }
+
+    // PAGINATION
+    // eg localhost:5000/api/product/?page=2&limit=3
+    const page = req.query.page;
+    const limit = req.query.limit;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+    // validate product skip
+    if (req.query.page) {
+      const productCount = await Product.countDocuments();
+      // skip exist product count
+      if (skip >= productCount) throw new Error('This page does not exist!');
     }
 
     const product = await query;
