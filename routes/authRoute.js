@@ -10,6 +10,7 @@ const {
   unblockUser,
   handleTokenRefresh,
   handleLogout,
+  updatePassword,
 } = require('../controller/userCtrl');
 const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
@@ -18,6 +19,7 @@ const router = express.Router();
 router.post('/register', createUser);
 router.post('/login', loginUserCtrl);
 router.get('/logout', handleLogout);
+router.put('/password', authMiddleware, updatePassword);
 
 // These specific routes should come before the dynamic ones else...otilorr
 router.get('/all-users', getAllUsers);
