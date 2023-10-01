@@ -86,11 +86,10 @@ const getAllProducts = asyncHandler(async (req, res) => {
     // destructure query object
     const queryObj = { ...req.query };
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
+    // remove any of the fields in the array that match the query
+    excludeFields.forEach((el) => delete queryObj[el]);
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte)\b/g, (match) => `$${match}`);
-
-    // remove any of the fields in the array that match the query
-    queryObj2 = excludeFields.forEach((el) => delete queryObj[el]);
 
     // console.log(queryObj, req.query);
     let query = Product.find(JSON.parse(queryStr));
@@ -98,20 +97,9 @@ const getAllProducts = asyncHandler(async (req, res) => {
     // SORTING
     // localhost:5000/api/product/?sort=category,brand
     if (req.query.sort) {
-      const sortFields = req.query.sort.split(',').map((field) => {
-        if (field.startsWith('-')) {
-          return [`-${field.slice(1)}`]; // Sort in descending order
-        }
-        return [field]; // Sort in ascending order
-      });
-
-      const flattendSortFields = sortFields.reduce(
-        (acc, val) => acc.concat(val),
-        []
-      );
-      console.log(flattendSortFields);
-
-      query = query.sort(flattendSortFields);
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+      console.log(sortBy, req.query);
     } else {
       query = query.sort('-createdAt');
     }
