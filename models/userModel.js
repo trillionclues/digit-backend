@@ -67,13 +67,15 @@ const userSchema = new Schema(
 // password hash
 userSchema.pre('save', async function (next) {
   // check if password is modified, encrypt again...
-  if (this.isModified('password')) {
-    next();
+  if (!this.isModified('password')) {
+    return next(); // Don't rehash if not modified
   }
 
-  // passeword excryption
+  // password encryption
   const genSalt = await bcrypt.genSaltSync(saltRounds);
   this.password = await bcrypt.hash(this.password, genSalt);
+
+  next(); // Continue with the save operation
 });
 
 // compare entered password

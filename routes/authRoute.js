@@ -17,9 +17,9 @@ const router = express.Router();
 
 //  user controller
 router.post('/register', createUser);
+router.put('/password', authMiddleware, updatePassword);
 router.post('/login', loginUserCtrl);
 router.get('/logout', handleLogout);
-router.put('/password', authMiddleware, updatePassword);
 
 // These specific routes should come before the dynamic ones else...otilorr
 router.get('/all-users', getAllUsers);
