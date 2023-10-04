@@ -5,6 +5,7 @@ const authRouter = require('./routes/authRoute');
 const productRouter = require('./routes/productRoute');
 const prodCategoryRouter = require('./routes/blogCatRoute');
 const blogCategoryRouter = require('./routes/blogCatRoute');
+const brandRouter = require('./routes/brandRoute');
 const blogRouter = require('./routes/blogRoute')
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const cookieParser = require('cookie-parser');
@@ -25,6 +26,7 @@ app.use('/api/product', productRouter);
 app.use('/api/blog', blogRouter)
 app.use('/api/category', prodCategoryRouter)
 app.use('/api/blogcategory', blogCategoryRouter)
+app.use('/api/brand', brandRouter)
 
 // NB: All middleware comes after the routes
 app.use(notFound);
