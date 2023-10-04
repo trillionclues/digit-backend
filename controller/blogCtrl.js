@@ -33,7 +33,7 @@ const updateBlogPost = asyncHandler(async(req, res) => {
 const getBlogPost = asyncHandler(async(req,res) => {
     const {id} = req.params
     validateMongoDBId(id)
-    
+
     try {
         const getBlog = await Blog.findById(id).populate('likes').populate('dislikes')
 
@@ -72,7 +72,7 @@ const deleteBlogPost = asyncHandler(async(req, res) => {
     }
 })
 
-// like blog
+// like a blog
 const likeBlogPost = asyncHandler(async(req, res) => {
     const loginUserId = req?.user?._id // get user id from request
     const {blogId} = req.body

@@ -3,6 +3,8 @@ const express = require('express');
 const { dbConnect } = require('./config/dbConnect');
 const authRouter = require('./routes/authRoute');
 const productRouter = require('./routes/productRoute');
+const prodCategoryRouter = require('./routes/blogCatRoute');
+const blogCategoryRouter = require('./routes/blogCatRoute');
 const blogRouter = require('./routes/blogRoute')
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const cookieParser = require('cookie-parser');
@@ -21,6 +23,8 @@ app.use(cookieParser());
 app.use('/api/user', authRouter);
 app.use('/api/product', productRouter);
 app.use('/api/blog', blogRouter)
+app.use('/api/category', prodCategoryRouter)
+app.use('/api/blogcategory', blogCategoryRouter)
 
 // NB: All middleware comes after the routes
 app.use(notFound);
