@@ -1,11 +1,12 @@
 const express = require("express")
 const router = express.Router()
-const {createProdCategory, updateProdCategory, deleteProdCategory, getSingleProdCategory, getAllCategories}  = require('../controller/prodCategoryCtrl')
+const {createProdCategory, updateProdCategory, deleteProdCategory, getSingleProdCategory, getAllCategories, addToWishList}  = require('../controller/prodCategoryCtrl')
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware")
 
 
 // category routes
 router.post('/', authMiddleware, isAdmin, createProdCategory)
+router.put('/wishlist', authMiddleware, isAdmin, addToWishList)
 router.put('/:id', authMiddleware, isAdmin, updateProdCategory)
 
 // Dynamic routes

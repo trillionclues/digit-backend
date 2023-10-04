@@ -1,4 +1,5 @@
 const Product = require('../models/productModel');
+const User = require("../models/userModel")
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
 const { validateMongoDBId } = require('../utils/validateMongoId');
@@ -132,10 +133,47 @@ const getAllProducts = asyncHandler(async (req, res) => {
   }
 });
 
+
+// add to wishlist
+const addToWishList = asyncHandler(async(req, res) => {
+  // get user from authmiddleware and product id from requesr body
+  const {_id} = req.user
+  const {prodId} = req.body
+
+  try {
+    // find the user w/id
+    const user = await User.findById(_id)
+
+    // check if product is already added to wishlist
+    const alreadyAdded = user.wishlist.find((id) => id.toString() === prodId)
+    
+    // remove the product from the users wishlist
+    if (alreadyAdded){
+      let user = await User.findByIdAndUpdate(_id, {
+        $pull: {wishlist: prodId} //pull the prod id from the user wishlist
+      }, {
+        new: true
+      })
+      res.json(user)
+    }
+    else{
+      let user = User.findByIdAndUpdate((id), {
+        $push: {wishlist: prodId}
+      }, {
+        new: true
+      })
+      res.json(user)
+    }
+  } catch (error) {
+    throw new Error(error)
+  }
+})
+
 module.exports = {
   createProduct,
   getAllProducts,
   getSingleProduct,
   updateProduct,
   deleteProduct,
+  addToWishList
 };
