@@ -4,6 +4,7 @@ const { generateToken } = require('../config/jwtToken');
 const { validateMongoDBId } = require('../utils/validateMongoId');
 const { generateRefreshToken } = require('../config/refreshToken');
 const jwt = require('jsonwebtoken');
+const crypto = require("crypto")
 const sendEmail = require('./emailCtrl');
 
 // create new user
@@ -236,7 +237,6 @@ const forgotPasswordToken = asyncHandler(async function (req, res) {
   if (!user) throw new Error('User not found with this email');
 
   // if user found...create token
-
   try {
     // use same method in user model that returns resetToken
     const token = await user.createPasswordResetToken();
@@ -245,7 +245,7 @@ const forgotPasswordToken = asyncHandler(async function (req, res) {
     // create reset url
     const resetURL = `Hi, Please follow this link to reset your password. This link is valid for 10 minutes from now. <a href='http://localhost:5000/api/user/reset-password-token/${token}'>Click  Here</>`;
 
-    // create data object for email controller
+    // create data object for email controller (emailCtrl)
     const data = {
       to: email,
       text: 'Hey User',
@@ -259,6 +259,33 @@ const forgotPasswordToken = asyncHandler(async function (req, res) {
     throw new Error(error);
   }
 });
+
+// reset password after getting forgot password token
+const resetUserPassword = asyncHandler(async(req, res) => {
+  const {password} = req.body
+  const {token} = req.params
+
+  //  hash the token parameter in the rq and search for user with matching passwordResetToken in the db
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  // find user with hashed token
+  const user = await User.findOne({
+    passwordResetToken: hashedToken, 
+    passwordResetExpires: { $gt: Date.now() }
+  });
+
+  // user not found or token expired
+  if (!user) throw new Error("Token expired. Please try again later!")
+
+  // else....
+  user.password = password
+  user.passwordResetToken = undefined; //because our password is changed and we dont need it anymore
+  user.passwordResetExpires = undefined
+
+  // save new user details and return user
+  await user.save()
+  res.json(user)
+})
 
 // exports
 module.exports = {
@@ -274,4 +301,5 @@ module.exports = {
   handleLogout,
   updatePassword,
   forgotPasswordToken,
+  resetUserPassword
 };

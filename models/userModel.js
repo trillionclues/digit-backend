@@ -68,7 +68,7 @@ const userSchema = new Schema(
 userSchema.pre('save', async function (next) {
   // check if password is modified, encrypt again...
   if (!this.isModified('password')) {
-    return next(); // Don't rehash if not modified
+    return next(); // Don't rehash if password not modified
   }
 
   // password encryption
@@ -83,13 +83,15 @@ userSchema.methods.isPasswordMatched = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// create reset token. we will also use this for the email forgot password
+// create password reset token method for the email forgot password
 userSchema.methods.createPasswordResetToken = async function () {
+
   const resetToken = crypto.randomBytes(32).toString('hex');
   this.passwordResetToken = crypto
-    .createHash('sha256')
-    .update('resetToken')
-    .digest('hex');
+  .createHash('sha256')
+  .update(resetToken)
+  .digest('hex');
+
 
   // set expiration time
   this.passwordResetExpires = Date.now() + 30 * 60 * 1000; // 10mins
