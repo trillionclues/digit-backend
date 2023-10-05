@@ -6,12 +6,15 @@ const {
   getSingleProduct,
   updateProduct,
   deleteProduct,
+  addToWishList,
 } = require('../controller/productCtrl');
 const { isAdmin, authMiddleware } = require('../middlewares/authMiddleware');
 
 // product controller
+router.put('/wishlist', authMiddleware, isAdmin, addToWishList)
 router.post('/', authMiddleware, isAdmin, createProduct);
 router.get('/', getAllProducts);
+
 
 // These specific routes should come before the dynamic ones else...otilorr
 router.put('/:id', authMiddleware, isAdmin, updateProduct);

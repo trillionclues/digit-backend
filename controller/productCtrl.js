@@ -63,7 +63,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // get single product from params
 const getSingleProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   // validate mongo id
   validateMongoDBId(id);
   try {
@@ -135,31 +134,32 @@ const getAllProducts = asyncHandler(async (req, res) => {
 
 
 // add to wishlist
-const addToWishList = asyncHandler(async(req, res) => {
+const addToWishList = asyncHandler(async (req, res) => {
   // get user from authmiddleware and product id from requesr body
+  const {prodID} = req.body
   const {_id} = req.user
-  const {prodId} = req.body
+  validateMongoDBId(_id)
 
   try {
-    // find the user w/id
+    // find the user
     const user = await User.findById(_id)
 
-    // check if product is already added to wishlist
-    const alreadyAdded = user.wishlist.find((id) => id.toString() === prodId)
-    
-    // remove the product from the users wishlist
-    if (alreadyAdded){
+    // check if product already added to wishlist
+    const alreadyWishlisted = user.wishlist.find((id) => id.toString() === prodID)
+    // ...then remove from wishlist
+    if(alreadyWishlisted){
       let user = await User.findByIdAndUpdate(_id, {
-        $pull: {wishlist: prodId} //pull the prod id from the user wishlist
+        $pull: {wishlist: prodID}  //pull the prod id from the user wishlist
       }, {
         new: true
       })
       res.json(user)
     }
     else{
-      let user = User.findByIdAndUpdate((id), {
-        $push: {wishlist: prodId}
-      }, {
+      // add to wishlist
+      let user = await User.findByIdAndUpdate(_id, {
+        $push: {wishlist: prodID}
+      },{
         new: true
       })
       res.json(user)
@@ -167,13 +167,15 @@ const addToWishList = asyncHandler(async(req, res) => {
   } catch (error) {
     throw new Error(error)
   }
-})
+
+});
+
 
 module.exports = {
   createProduct,
   getAllProducts,
   getSingleProduct,
   updateProduct,
+  addToWishList,
   deleteProduct,
-  addToWishList
 };
