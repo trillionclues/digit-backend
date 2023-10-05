@@ -171,47 +171,89 @@ const addToWishList = asyncHandler(async (req, res) => {
 });
 
 // add rating
-const rating = asyncHandler(async(req, res) => {
-  const {_id} = req.user
-  const {star, prodID} = req.body
-  const product = await Product.findById(prodID)
+const rating = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { star, prodID } = req.body;
 
   try {
-  // check if product already rated by user
-  let alreadyRated = product.ratings.find((userId) => userId.postedby.toString === _id.toString())
-  
-  if (alreadyRated) {
-    // find the rated product
-    const updateRating = await Product.updateOne(
-      {
-        ratings: {$elemMatch: alreadyRated}
-      },
-      {
-        $set: {"ratings.$.star": star},
-      },
-      {
-        new: true
+    // Check if product already rated by user
+    const product = await Product.findById(prodID);
+    let alreadyRatedIndex = -1;
+
+    // Find the index of the rating by the user
+    product.ratings.forEach((rating, index) => {
+      if (rating.postedby.toString() === _id.toString()) {
+        alreadyRatedIndex = index;
       }
-    )
-    res.json(updateRating)
-  }
-  else{
-    const rateProduct = await Product.findByIdAndUpdate(prodID, {
-      $push: {
-        ratings: {
-          star: star,
-          postedBy: _id
-        }
-      }
-    }, {
-      new: true
-    })
-    res.json(rateProduct)
-  }
+    });
+
+    if (alreadyRatedIndex !== -1) {
+      // Update the star rating if the user has already rated the product
+      product.ratings[alreadyRatedIndex].star = star;
+
+      // Update the product document
+      const updatedProduct = await product.save();
+      res.json(updatedProduct);
+    } else {
+      // Add a new rating if the user hasn't rated the product yet
+      product.ratings.push({
+        star: star,
+        postedby: _id,
+      });
+
+      // Update the product document
+      const updatedProduct = await product.save();
+      res.json(updatedProduct);
+    }
   } catch (error) {
-    throw new Error(error)
+    throw new Error(error);
   }
-})
+});
+
+// const rating = asyncHandler(async(req, res) => {
+//   const {_id} = req.user
+//   const {star, prodID} = req.body
+
+
+//   try {
+//   // check if product already rated by user
+//   const product = await Product.findById(prodID)
+//   let alreadyRated = product.ratings.find((userId) => userId.postedby.toString === _id.toString())
+  
+//   if (alreadyRated) {
+//     // find the rated product
+//     const updateRating = await Product.updateOne(
+//       {
+//         ratings: {$elemMatch: alreadyRated},
+//       },
+//       {
+//         $set: { "ratings.$.star": star}
+//       }, 
+//       {
+//         new: true
+//       }
+//     )
+//     res.json(updateRating)
+//   }
+//   else{
+//     // update the user ratings array with the star given and user id 
+//     const rateProduct = await Product.findByIdAndUpdate(prodID, {
+//       $push: {
+//         ratings: {
+//           star: star,
+//           postedby: _id
+//         }
+//       }
+//     },
+//     {
+//       new: true
+//     })
+//     res.json(rateProduct)
+//   }
+//   } catch (error) {
+//     throw new Error(error)
+//   }
+// })
 
 module.exports = {
   createProduct,

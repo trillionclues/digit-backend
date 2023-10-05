@@ -53,7 +53,7 @@ const productSchema = Schema(
     ratings: [
       {
         star: Number,
-        postedby: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User"}
       },
     ],
     totalRatings: {
