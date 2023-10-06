@@ -2,6 +2,7 @@ const Product = require('../models/productModel');
 const User = require("../models/userModel")
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
+const fs = require('fs')
 const { validateMongoDBId } = require('../utils/validateMongoId');
 const cloudinaryImageUpload = require('../utils/cloudinary')
 
@@ -248,15 +249,16 @@ const uploadProdImages = asyncHandler(async(req, res) => {
       const {path} = file
       const newPath  = await uploader(path)
       urls.push(newPath)
+      fs.unlinkSync(path)
     }
 
     // update particular image by updating the schema
-    const finalProduct = await Product.findByIdAndUpdate(id, {
+    const findProduct = await Product.findByIdAndUpdate(id, {
       images: urls.map((file) => {return file;})
     }, {
       new: true
     });
-    res.json(finalProduct)
+    res.json(findProduct)
   } catch (error) {
     throw new Error(error)
   }

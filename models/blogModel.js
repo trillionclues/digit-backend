@@ -38,14 +38,15 @@ const blogSchema = Schema({
             ref: "User"
         },
     ],
-    image: {
-        type: String,
-        default: "https://media.istockphoto.com/id/1008719744/photo/wood-block-cube-put-the-front-computer-keyboard-with-word-blog-and-empty-copy-space-for-your.webp?s=1024x1024&w=is&k=20&c=ZA6E9DPWcQ0si2VSeadiK3W3YW2eEXJBWT-Hvdnx0aY="
-    },
+    // image: {
+    //     type: String,
+    //     default: "https://media.istockphoto.com/id/1008719744/photo/wood-block-cube-put-the-front-computer-keyboard-with-word-blog-and-empty-copy-space-for-your.webp?s=1024x1024&w=is&k=20&c=ZA6E9DPWcQ0si2VSeadiK3W3YW2eEXJBWT-Hvdnx0aY="
+    // },
     author: {
         type: String,
         default: "Admin"
-    }
+    },
+    images: []
 }, {
     toJSON: {
         virtuals: true
