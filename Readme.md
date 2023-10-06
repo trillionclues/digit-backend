@@ -46,6 +46,9 @@ If you would like to use this api, ensure you have met the following requirement
    JWT_SECRET=your-jwt-secret
    MAIL_ID: GMAIL MAIL ID
    MP=GMAIL MAIL APP PASSWORD
+   CLOUD_NAME=CLOUDINARY_NAME
+   API_KEY=CLOUDINARY_api_KEY
+   API_SECRET=CLOUDINARY_SECRET
    ```
 
 4. Start the server:
