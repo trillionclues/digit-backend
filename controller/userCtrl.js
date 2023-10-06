@@ -329,7 +329,8 @@ const resetUserPassword = asyncHandler(async(req, res) => {
 // get user wishlist 
 const getWishlist = asyncHandler(async(req, res) => {
   // get user with id trough authmiddleware
-  const {_id} = req.user
+  const {_id} = req.user;
+  validateMongoDBId(_id)
   try {
     // return user wishlist and populate wishlist field
     const getWish = await User.findById(_id).populate("wishlist")
