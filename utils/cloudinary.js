@@ -8,6 +8,8 @@ cloudinary.config({
 })
 
 
+// wrapper function to upload image to Cloudinary and returns a URL to the uploaded image.
+// returns a promise that resolves with the Cloudinary URL.
 const cloudinaryImageUpload = async(fileToUpload) => {
     return new Promise((resolve) => {
         cloudinary.uploader.upload(fileToUpload, (result) => {

@@ -1,5 +1,5 @@
 const multer = require("multer") // handle multipart form data
-const sharp = require("sharp") // handle image formatting 
+const sharp = require("sharp") // handle image processing b4 upload to cloudinary 
 const path = require('path')
 
 
