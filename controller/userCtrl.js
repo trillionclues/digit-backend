@@ -326,6 +326,19 @@ const resetUserPassword = asyncHandler(async(req, res) => {
   res.json(user)
 })
 
+// get user wishlist 
+const getWishlist = asyncHandler(async(req, res) => {
+  // get user with id trough authmiddleware
+  const {_id} = req.user
+  try {
+    // return user wishlist and populate wishlist field
+    const getWish = await User.findById(_id).populate("wishlist")
+    res.json(getWish)
+  } catch (error) {
+    throw new Error(error)
+  }
+})
+
 // exports
 module.exports = {
   createUser,
@@ -341,5 +354,6 @@ module.exports = {
   updatePassword,
   forgotPasswordToken,
   resetUserPassword,
-  adminLoginCtrl
+  adminLoginCtrl,
+  getWishlist
 };

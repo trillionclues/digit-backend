@@ -13,7 +13,8 @@ const {
   updatePassword,
   forgotPasswordToken,
   resetUserPassword,
-  adminLoginCtrl
+  adminLoginCtrl,
+  getWishlist
 } = require('../controller/userCtrl');
 const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
@@ -26,6 +27,7 @@ router.post('/password', authMiddleware, updatePassword);
 router.post('/login', loginUserCtrl);
 router.post('/admin-login', adminLoginCtrl);
 router.get('/logout', handleLogout);
+router.get('/wishlist', authMiddleware, getWishlist);
 
 // These specific routes should come before the dynamic ones else...otilorr
 router.get('/all-users', getAllUsers);
