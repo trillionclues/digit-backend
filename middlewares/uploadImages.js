@@ -1,6 +1,7 @@
 const multer = require("multer") // handle multipart form data
 const sharp = require("sharp") // handle image processing b4 upload to cloudinary 
 const path = require('path')
+const fs = require('fs')
 
 
 // multer storage...first locally and then to the cloud
@@ -40,7 +41,8 @@ const productImgResize = async (req, res, next) => {
 
     // else
     await Promise.all(req.files.map(async(file) => {
-        await sharp(file.path).resize(300,300).toFormat('jpeg').jpeg({quality: 90}).toFile(`public/images/products/${file.filename}`)
+        await sharp(file.path).resize(300,300).toFormat('jpeg').jpeg({quality: 90}).toFile(`public/images/products/${file.filename}`);
+        fs.unlinkSync(`public/images/products/${file.filename}`)
     } ));
     next();
 }
@@ -51,7 +53,8 @@ const blogImgResize = async (req, res, next) => {
 
     // else
     await Promise.all(req.files.map(async(file) => {
-        await sharp(file.path).resize(300,300).toFormat('jpeg').jpeg({quality: 90}).toFile(`public/images/blogs/${file.filename}`)
+        await sharp(file.path).resize(300,300).toFormat('jpeg').jpeg({quality: 90}).toFile(`public/images/blogs/${file.filename}`);
+        fs.unlinkSync(`public/images/blogs/${file.filename}`)
     } ));
     next()
 }
