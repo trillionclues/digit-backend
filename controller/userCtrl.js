@@ -268,6 +268,22 @@ const updatePassword = asyncHandler(async (req, res) => {
   }
 });
 
+// save user address
+const saveUserAddress = asyncHandler(async(req, res) => {
+  const {_id} = req.user
+  validateMongoDBId(_id)
+  try {
+    const userAddress = await User.findByIdAndUpdate(_id, {
+      "address": req?.body?.address
+    }, {
+      new: true
+    })
+    res.json(userAddress)
+  } catch (error) {
+    throw new Error(error)
+  }
+})
+
 // forgot password token
 const forgotPasswordToken = asyncHandler(async function (req, res) {
   // find user with user email
@@ -356,5 +372,6 @@ module.exports = {
   forgotPasswordToken,
   resetUserPassword,
   adminLoginCtrl,
-  getWishlist
+  getWishlist,
+  saveUserAddress
 };
