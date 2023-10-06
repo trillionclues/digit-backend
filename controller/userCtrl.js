@@ -27,7 +27,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
   // get email and password from request body
   const { email, password } = req.body;
 
-  // check if user exists and compare with encrypted passeord
+  // check if user exists and compare with encrypted password
   const findUser = await User.findOne({ email });
   if (findUser && (await findUser.isPasswordMatched(password))) {
     // generate a refreshToken for user
@@ -54,6 +54,45 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
     throw new Error('Invalid credentials');
   }
 });
+
+// admin login
+const adminLoginCtrl = asyncHandler(async(req, res) => {
+  const {email, password} = req.body
+
+    // check if user exists and compare with encrypted password
+    const findAdmin = await User.findOne({email})
+
+    // check if found user is an admin
+    if (findAdmin.role !== 'admin') throw new Error("Not Authorized")
+
+    // else if found user is an admin
+    if (findAdmin && (await findAdmin.isPasswordMatched(password))){
+
+      // generate refreshtoken for user
+      const refreshToken = await generateRefreshToken(findAdmin?._id)
+      const updateUserStatus = await User.findByIdAndUpdate(findAdmin.id, {
+        refreshToken: refreshToken
+      }, {
+        new: true
+      });
+      
+      // return user encrypted data with refresh token
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        maxAge: 72 * 60 * 60 * 1000 // expires in 72hrs
+      });
+      res.json({
+        _id: findAdmin?._id,
+        firstname: findAdmin?.firstname,
+        lastname: findAdmin?.lastname,
+        mobile: findAdmin?.mobile,
+        token: generateToken(findAdmin?._id)
+      });
+    }
+    else {
+      throw new Error("Invalid credentials")
+    }
+})
 
 // handle refresh token
 const handleTokenRefresh = asyncHandler(async (req, res) => {
@@ -301,5 +340,6 @@ module.exports = {
   handleLogout,
   updatePassword,
   forgotPasswordToken,
-  resetUserPassword
+  resetUserPassword,
+  adminLoginCtrl
 };

@@ -12,7 +12,8 @@ const {
   handleLogout,
   updatePassword,
   forgotPasswordToken,
-  resetUserPassword
+  resetUserPassword,
+  adminLoginCtrl
 } = require('../controller/userCtrl');
 const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
@@ -23,6 +24,7 @@ router.post('/forgot-password-token', forgotPasswordToken);
 router.put('/reset-password/:token', resetUserPassword);
 router.post('/password', authMiddleware, updatePassword);
 router.post('/login', loginUserCtrl);
+router.post('/admin-login', adminLoginCtrl);
 router.get('/logout', handleLogout);
 
 // These specific routes should come before the dynamic ones else...otilorr
