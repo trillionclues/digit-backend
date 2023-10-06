@@ -3,7 +3,7 @@ const sharp = require("sharp") // handle image formatting
 const path = require('path')
 
 
-// multer storage
+// multer storage...first locally and then to the cloud
 const multerStorage = multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, path.join(__dirname, "../public/images"))
@@ -22,7 +22,7 @@ const multerFilter = (req, file,cb) => {
     }
     else{
         cb({
-            message: "Unsupported file formt"
+            message: "Unsupported file format"
         }, false)
     }
 }
@@ -34,4 +34,26 @@ const uploadPhoto = multer({
     limits: {fileSize: 2000000}
 })
 
-module.exports = {uploadPhoto}
+// product resize
+const productImgResize = async (req, res, next) => {
+    if (!req.files) return next();
+
+    // else
+    await Promise.all(req.files.map(async(file) => {
+        await sharp(file.path).resize(300,300).toFormat('jpeg').jpeg({quality: 90}).toFile(`public/images/products/${file.filename}`)
+    } ));
+    next();
+}
+
+// blog resize
+const blogImgResize = async (req, res, next) => {
+    if (!req.files) return next();
+
+    // else
+    await Promise.all(req.files.map(async(file) => {
+        await sharp(file.path).resize(300,300).toFormat('jpeg').jpeg({quality: 90}).toFile(`public/images/blogs/${file.filename}`)
+    } ));
+    next()
+}
+
+module.exports = {uploadPhoto, productImgResize, blogImgResize}
