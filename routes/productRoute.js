@@ -8,7 +8,7 @@ const {
   deleteProduct,
   addToWishList,
   rating,
-  uploadImages
+  uploadProdImages
 } = require('../controller/productCtrl');
 const { isAdmin, authMiddleware } = require('../middlewares/authMiddleware');
 const { uploadPhoto, productImgResize } = require('../middlewares/uploadImages');
@@ -20,7 +20,7 @@ router.put('/rating', authMiddleware, rating)
 router.put('/wishlist', authMiddleware, addToWishList)
 
 // These specific routes should come before the dynamic ones else...otilorr
-router.put('/upload/:id', authMiddleware, isAdmin, uploadPhoto.array('images', 10), productImgResize, uploadImages)
+router.put('/upload/:id', authMiddleware, isAdmin, uploadPhoto.array('images', 10), productImgResize, uploadProdImages)
 router.put('/:id', authMiddleware, isAdmin, updateProduct);
 router.get('/:id', getSingleProduct);
 router.delete('/:id', authMiddleware, isAdmin, deleteProduct);

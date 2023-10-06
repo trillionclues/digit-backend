@@ -229,8 +229,8 @@ const rating = asyncHandler(async(req, res) => {
 })
 
 
-// upload images
-const uploadImages = asyncHandler(async(req, res) => {
+// upload product images
+const uploadProdImages = asyncHandler(async(req, res) => {
   // get the product id from params
   const {id} = req.params
   validateMongoDBId(id)
@@ -270,5 +270,5 @@ module.exports = {
   addToWishList,
   deleteProduct,
   rating,
-  uploadImages
+  uploadProdImages
 };
