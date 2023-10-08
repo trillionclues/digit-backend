@@ -362,27 +362,28 @@ const getWishlist = asyncHandler(async(req, res) => {
 // create user cart
 const userCart = asyncHandler(async(req, res) => {
   const {cart} = req.body
-  // find the user
   const {_id} = req.user
   validateMongoDBId(_id)  
   try {
-    let products = []
+    let products = [] //array to stor cart products
     const user = await User.findById(_id)
 
-    // check if user already have products in cart
+    // Check if there's an existing cart for the user and delete if found
     const activeCart  = await Cart.findOne({orderby: user._id})
     if (activeCart){
-      activeCart.remove()
+      activeCart.deleteOne()
     }
 
     // if no products in cart, map through and create cart
     for(let i = 0; i < cart.length; i++){
-      let object = {}
+      // Create an empty object to represent a product.
+      // Assign the product's '_id', 'count' and 'color' to their respective property.
+      let object = {} 
       object.product = cart[i]._id
       object.count = cart[i].count
       object.color = cart[i].color
 
-      // calculate price of products in cart
+      // / Find the product and select its 'price' field to calculate price of products in cart
       let getPrice = await Product.findById(cart[i]._id).select("price").exec()
 
       // store the price in the object
@@ -390,18 +391,18 @@ const userCart = asyncHandler(async(req, res) => {
       products.push(object)
     }
 
-    // find cart total
+    // find the total price of the cart
     let cartTotal = 0
     for (let i = 0; i < products.length; i++){
-      // multiply price with prod count and return total
+      // multiply the price of each product by its count and accumulate to calculate the total.
       cartTotal =  cartTotal + products[i].price * products[i].count
     }
     // console.log(products, cartTotal)
 
-    // set new cart
+    // set a new cart with the user's products and total price
     let newCart = await new Cart({
-      products,
-      cartTotal,
+      products, // Assign 'products' array to 'products' field of new cart.
+      cartTotal, // Assign user's '_id' to 'orderby' field of new cart.
       orderby: user?._id
     }).save()
 
@@ -411,6 +412,9 @@ const userCart = asyncHandler(async(req, res) => {
     throw new Error(error)
   }
 })
+
+// get user cart
+const getUserCart = asyncHandler(async(req, res) =>{} )
 
 // exports
 module.exports = {
@@ -430,5 +434,6 @@ module.exports = {
   adminLoginCtrl,
   getWishlist,
   saveUserAddress,
-  userCart
+  userCart,
+  getUserCart
 };
