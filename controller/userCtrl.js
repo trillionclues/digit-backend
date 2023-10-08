@@ -1,4 +1,6 @@
 const User = require('../models/userModel');
+const Product = require('../models/productModel');
+const Cart = require('../models/cartModel');
 const asyncHandler = require('express-async-handler');
 const { generateToken } = require('../config/jwtToken');
 const { validateMongoDBId } = require('../utils/validateMongoId');
@@ -356,6 +358,60 @@ const getWishlist = asyncHandler(async(req, res) => {
   }
 })
 
+
+// create user cart
+const userCart = asyncHandler(async(req, res) => {
+  const {cart} = req.body
+  // find the user
+  const {_id} = req.user
+  validateMongoDBId(_id)  
+  try {
+    let products = []
+    const user = await User.findById(_id)
+
+    // check if user already have products in cart
+    const activeCart  = await Cart.findOne({orderby: user._id})
+    if (activeCart){
+      activeCart.remove()
+    }
+
+    // if no products in cart, map through and create cart
+    for(let i = 0; i < cart.length; i++){
+      let object = {}
+      object.product = cart[i]._id
+      object.count = cart[i].count
+      object.color = cart[i].color
+
+      // calculate price of products in cart
+      let getPrice = await Product.findById(cart[i]._id).select("price").exec()
+
+      // store the price in the object
+      object.price = getPrice.price
+      products.push(object)
+    }
+
+    // find cart total
+    let cartTotal = 0
+    for (let i = 0; i < products.length; i++){
+      // multiply price with prod count and return total
+      cartTotal =  cartTotal + products[i].price * products[i].count
+    }
+    // console.log(products, cartTotal)
+
+    // set new cart
+    let newCart = await new Cart({
+      products,
+      cartTotal,
+      orderby: user?._id
+    }).save()
+
+    res.json(newCart)
+    
+  } catch (error) {
+    throw new Error(error)
+  }
+})
+
 // exports
 module.exports = {
   createUser,
@@ -373,5 +429,6 @@ module.exports = {
   resetUserPassword,
   adminLoginCtrl,
   getWishlist,
-  saveUserAddress
+  saveUserAddress,
+  userCart
 };
