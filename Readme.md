@@ -5,6 +5,7 @@ Welcome to digit-ecoomerce, the backend API for digit eCommerce website. I creat
 ## Table of Contents
 
 - [Getting Started](#getting-started)
+  - [Documentation](#documentation)
   - [Installation](#installation)
 - [API Endpoints](#api-endpoints)
   - [Authentication](#authentication)
@@ -22,6 +23,11 @@ If you would like to use this api, ensure you have met the following requirement
 - Node.js and npm installed
 - MongoDB installed and running
 - Git installed (for cloning the repository)
+
+## [Documentation](#documentation)
+Documentation
+
+[Digitic Documentation](https://documenter.getpostman.com/view/27910115/2s9YJhveXE)
 
 ### [Installation](#installation)
 

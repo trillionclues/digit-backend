@@ -414,7 +414,39 @@ const userCart = asyncHandler(async(req, res) => {
 })
 
 // get user cart
-const getUserCart = asyncHandler(async(req, res) =>{} )
+const getUserCart = asyncHandler(async(req, res) =>{
+  const {_id}= req.user
+  validateMongoDBId(_id)
+
+  try {
+    // find user cart based on id
+    const userCart = await Cart.findOne({orderby: _id}).populate("products.product")
+
+    // check if cart exists || empty
+    if (!userCart) {
+      return res.json({message: "Cart is empty"})
+    }
+
+    res.json(userCart)
+
+    
+  } catch (error) {
+    throw new Error(error)
+  }
+} )
+
+// empty user cart
+const emptyUserCart = asyncHandler(async(req, res) => {
+  const {_id}= req.user
+  validateMongoDBId(_id)
+  try {
+    const user = await User.findOne(_id) // find user
+    const cart = await Cart.findOneAndRemove({orderby: user._id}) //remove user cart
+    res.json(cart)
+  } catch (error) {
+    throw new Error(error)
+  }
+})
 
 // exports
 module.exports = {
@@ -435,5 +467,6 @@ module.exports = {
   getWishlist,
   saveUserAddress,
   userCart,
-  getUserCart
+  getUserCart,
+  emptyUserCart
 };
