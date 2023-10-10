@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
+const Order = require('../models/orderModel');
 const Coupon = require('../models/couponModel');
 const asyncHandler = require('express-async-handler');
 const { generateToken } = require('../config/jwtToken');
@@ -9,6 +10,7 @@ const { generateRefreshToken } = require('../config/refreshToken');
 const jwt = require('jsonwebtoken');
 const crypto = require("crypto")
 const sendEmail = require('./emailCtrl');
+
 
 // create new user
 const createUser = asyncHandler(async (req, res) => {
@@ -473,6 +475,38 @@ const applyCoupon = asyncHandler(async(req, res) => {
 
   // return the response
   res.json(totalAfterDiscount)
+})
+
+// create order
+const createOrder = asyncHandler(async(req, res) => {
+  const {_id} = req.user
+  validateMongoDBId(_id)
+  const {CashOnDelivery, couponApplied} = req.body
+
+  try {
+    if (!CashOnDelivery) throw new Error("Create cash order failed!")
+    const user = await User.findById(_id)
+
+    // find user cart
+    let userCart = await Cart.findOne({orderby: user._id})
+    let finalAmount = 0
+
+    if(couponApplied && userCart.totalAfterDiscount){
+      // calculate finalamount for order
+      finalAmount  = userCart.totalAfterDiscount * 100;
+    }
+    else{
+      finalAmount = userCart.cartTotal * 100;
+    }
+
+    // create order using orderModel
+    let newOrder = await new Order({
+      products: userCart.products,
+      paymentIntent: {},
+    })
+  } catch (error) {
+    throw new Error(error)
+  }
 })
 
 // exports
