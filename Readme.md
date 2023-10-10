@@ -25,9 +25,8 @@ If you would like to use this api, ensure you have met the following requirement
 - Git installed (for cloning the repository)
 
 ## [Documentation](#documentation)
-Documentation
 
-[Digitic Documentation](https://documenter.getpostman.com/view/27910115/2s9YJhveXE)
+ - [Digitic Documentation](https://documenter.getpostman.com/view/27910115/2s9YJhveXE)
 
 ### [Installation](#installation)
 
