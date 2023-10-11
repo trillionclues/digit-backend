@@ -232,10 +232,6 @@ const rating = asyncHandler(async(req, res) => {
 
 // upload product images
 const uploadProdImages = asyncHandler(async(req, res) => {
-  // get the product id from params
-  const {id} = req.params
-  validateMongoDBId(id)
-
   try {
     // call the cloudinary config from utils
     const uploader = (path) => cloudinaryImageUpload(path, "images");
@@ -253,12 +249,10 @@ const uploadProdImages = asyncHandler(async(req, res) => {
     }
 
     // update particular image by updating the schema
-    const findProduct = await Product.findByIdAndUpdate(id, {
-      images: urls.map((file) => {return file;})
-    }, {
-      new: true
+    const images = urls.map((file) => {
+      return  file;
     });
-    res.json(findProduct)
+    res.json(images)
   } catch (error) {
     throw new Error(error)
   }
