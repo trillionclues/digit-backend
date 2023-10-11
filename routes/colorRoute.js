@@ -3,8 +3,7 @@ const router = express.Router()
 const {createColor, updateColor, deleteColor, getSingleColor, getAllColor}  = require('../controller/colorCtrl')
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware")
 
-
-// brand routes
+// color routes
 router.post('/', authMiddleware, isAdmin, createColor)
 router.put('/:id', authMiddleware, isAdmin, updateColor)
 

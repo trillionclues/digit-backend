@@ -1,4 +1,3 @@
-const express = require('express')
 const asyncHandler = require("express-async-handler")
 const { validateMongoDBId } = require('../utils/validateMongoId');
 const Color = require('../models/colorModel')

@@ -43,11 +43,13 @@ const productSchema = Schema(
       required: true,
     },
     images: [],
-    color: {
-      type: String,
-      required: true,
-      // enum: ['Black', 'Brown', 'Red'],
-    },
+    color: [],
+    tags: [],
+    // color: {
+    //   type: String,
+    //   required: true,
+    //   // enum: ['Black', 'Brown', 'Red'],
+    // },
     ratings: [
       {
         star: Number,
