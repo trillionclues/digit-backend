@@ -260,12 +260,17 @@ const uploadProdImages = asyncHandler(async(req, res) => {
 })
 
 // delete product images from cloudinary
-const deleteProdImages = asyncHandler(async(req, res) => {
-  const {path} = req.params
-  
-  const deleted = cloudinaryDeleteUpload(path, "images")
-  res.json({message: "Deleted"})
-})
+const deleteProdImages = asyncHandler(async (req, res) => {
+  // get the pubic_id from params using JS object keys
+  const public_id = req.params.public_id;
+
+  try {
+    const deleted = await cloudinaryDeleteUpload(public_id);
+    res.json({message: "Images successfully deleted!"})
+  } catch (error) {
+    throw new Error(error)
+  }
+});
 
 module.exports = {
   createProduct,

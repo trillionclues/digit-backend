@@ -24,7 +24,8 @@ router.put('/wishlist', authMiddleware, addToWishList)
 router.put('/upload', authMiddleware, isAdmin, uploadPhoto.array('images', 10), productImgResize, uploadProdImages)
 router.put('/:id', authMiddleware, isAdmin, updateProduct);
 router.get('/:id', getSingleProduct);
-router.delete('/:id', authMiddleware, isAdmin, deleteProduct);
 router.delete('/delete-image/:id', authMiddleware, isAdmin, deleteProdImages);
+router.delete('/:id', authMiddleware, isAdmin, deleteProduct);
+
 
 module.exports = router;

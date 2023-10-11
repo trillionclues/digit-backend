@@ -28,21 +28,35 @@ const cloudinaryImageUpload = async(fileToUpload) => {
 };
 
 // wrapper function delete images in cloudinary container
-const cloudinaryDeleteUpload = async(fileToDelete) => {
-    return new Promise((resolve) => {
-        cloudinary.uploader.destroy(fileToDelete, (result) => {
-            resolve(
-                {
-                    url: result.secure_url,
-                    asset_id: result.asset_id,
-                    public_id: result.public_id
-                },
-                {
-                    resource_type: "auto"
-                }
-            )
-        })
-    })
-}
+const cloudinaryDeleteUpload = async (publicId) => {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.destroy(publicId, (error, result) => {
+        if (error) {
+          console.error("Error deleting image from Cloudinary:", error);
+          reject(error);
+        } else {
+          console.log("Image deleted from Cloudinary:", result);
+          resolve(result);
+        }
+      });
+    });
+  };
+  
+// const cloudinaryDeleteUpload = async(fileToDelete) => {
+//     return new Promise((resolve) => {
+//         cloudinary.uploader.destroy(fileToDelete, (result) => {
+//             resolve(
+//                 {
+//                     url: result.secure_url,
+//                     asset_id: result.asset_id,
+//                     public_id: result.public_id
+//                 },
+//                 {
+//                     resource_type: "auto"
+//                 }
+//             );
+//         });
+//     });
+// }
 
 module.exports = {cloudinaryImageUpload, cloudinaryDeleteUpload}
