@@ -29,7 +29,7 @@ const cloudinaryImageUpload = async(fileToUpload) => {
 
 // wrapper function delete images in cloudinary container
 const cloudinaryDeleteUpload = async(fileToDelete) => {
-    return new Promise((resove) => {
+    return new Promise((resolve) => {
         cloudinary.uploader.destroy(fileToDelete, (result) => {
             resolve(
                 {
