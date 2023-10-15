@@ -1,13 +1,5 @@
-const Product = require("../models/productModel");
-const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
-const fs = require("fs");
-const { validateMongoDBId } = require("../utils/validateMongoId");
-const {
-  cloudinaryImageUpload,
-  cloudinaryDeleteUpload,
-} = require("../utils/cloudinary");
 const {
   createNewProduct,
   handleUpdateProduct,
