@@ -1,6 +1,4 @@
-const Brand = require("../models/brandModel");
 const asyncHandler = require("express-async-handler");
-const { validateMongoDBId } = require("../utils/validateMongoId");
 const {
   createNewBrand,
   handleUpdateBrand,

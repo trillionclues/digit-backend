@@ -1,6 +1,4 @@
-const Coupon = require("../models/couponModel");
 const asyncHandler = require("express-async-handler");
-const { validateMongoDBId } = require("../utils/validateMongoId");
 const {
   handleCreateCoupon,
   handleGetAllCoupon,
