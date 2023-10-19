@@ -10,6 +10,7 @@ const User = require("../../models/userModel");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const uniqid = require("uniqid");
+const generateEmailBody = require("../../utils/emailBody");
 
 // create new user
 const createNewUser = async (body) => {
@@ -225,15 +226,15 @@ const handleforgotPasswordToken = async (email) => {
   await user.save();
 
   // create reset url
-
-  const resetURL = `Hi, Please follow this link to reset your password. This link is valid for 10 minutes from now. <a href='https://digit-client.vercel.app/reset-password/${token}'>Click  Here</>`;
+  const buttonText = "Reset Password";
+  const emailBody = generateEmailBody(token, buttonText);
 
   // create data object for email controller (emailCtrl)
   const data = {
     to: email,
     text: "Hey User",
     subject: "Forgot Password Link",
-    htm: resetURL,
+    htm: emailBody,
   };
 
   // pass the data to sendEMail
