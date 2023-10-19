@@ -28,20 +28,24 @@ module.exports = (token, buttonText) => {
       button {
         background-color: #072f5f;
         padding: 10px 14px;
+        cursor: pointer;
       }
       .button {
         color: #fff;
         text-decoration: none;
         display: inline-block;
+        cursor: pointer;
       }
       .button .text {
         color: #fff
+        cursor: pointer;
       }
       p{
         font-size: 14px;
       }
       a{
-        text-decoration:none
+        text-decoration:none;
+        cursor: pointer;
       }
     </style>
   </head>
