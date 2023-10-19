@@ -225,7 +225,7 @@ const handleforgotPasswordToken = async (email) => {
   await user.save();
 
   // create reset url
-  const resetURL = `Hi, Please follow this link to reset your password. This link is valid for 10 minutes from now. <a href='https://digit-client.vercel.app/reset-password?token=${token}'>Click  Here</>`;
+  const resetURL = `Hi, Please follow this link to reset your password. This link is valid for 10 minutes from now. <a href='https://digit-client.vercel.app/api/user/reset-password/${token}'>Click  Here</>`;
 
   // create data object for email controller (emailCtrl)
   const data = {
