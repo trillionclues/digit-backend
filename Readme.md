@@ -7,6 +7,7 @@ Welcome to digit-ecoomerce, the backend API for digit eCommerce website. I creat
 - [Getting Started](#getting-started)
   - [Documentation](#documentation)
   - [Installation](#installation)
+  - [Technologies](#technologies)
 - [API Endpoints](#api-endpoints)
   - [Authentication](#authentication)
   - [Products](#products)
@@ -16,6 +17,7 @@ Welcome to digit-ecoomerce, the backend API for digit eCommerce website. I creat
 - [License](#license)
 
 ## [Getting Started](#getting-started)
+
 Prerequisites
 
 If you would like to use this api, ensure you have met the following requirements:
@@ -26,7 +28,7 @@ If you would like to use this api, ensure you have met the following requirement
 
 ## [Documentation](#documentation)
 
- - [Digitic Documentation](https://documenter.getpostman.com/view/27910115/2s9YJhveXE)
+- [Digitic Documentation](https://documenter.getpostman.com/view/27910115/2s9YJhveXE)
 
 ### [Installation](#installation)
 
@@ -40,7 +42,7 @@ If you would like to use this api, ensure you have met the following requirement
 
    ```
    cd digit-backend
-   npm install OR yarn 
+   npm install OR yarn
    ```
 
 3. Configure your environment variables by creating a `.env` file and adding your settings:
@@ -64,11 +66,26 @@ If you would like to use this api, ensure you have met the following requirement
 
 Now, the backend server should be up and running.
 
+## [Technologies](#technologies)
+
+This project uses a number of open source projects:
+
+- [NodeJS] - A JavaScript runtime built on Chrome's V8 JavaScript engine.
+- [Express] - Fast, unopinionated, minimalist web framework for Node.js.
+- [MongoDB] - The leading NoSQL database for modern applications.
+- [Mongoose] - Mongoose ODM for MongoDB object modelling.
+- [Bcrypt] - A password hashing function that can be used to securely store passwords in databases.
+- [JsonWebToken] - An implementation of JSON Web Tokens.
+- [Cloudinary] - Cloud image and video management platform.
+- [Multer] - Multer for handling multipart form data.
+- [Crypto] - To evaluate and authenticate hash
 
 ## [API Endpoints](#api-endpoints)
+
 Access the API endpoints as described in the [API Endpoints](#api-endpoints) section below.
 
 ### [Authentication](#authentication)
+
 - POST /api/user/register: Register a new user.
 - POST /api/user/password: Change user password.
 - POST /api/user/forgot-password-token: Change user password token.
@@ -82,22 +99,25 @@ etc...
 ...
 
 ### [Products](#products)
+
 - GET /api/product/: Get a list of all products.
 - GET /api/product/:id: Get details of a specific product.
 - POST /api/product: Create a new product.
 - PUT /api/product/:id: Update an existing product.
 - DELETE /api/product/:id: Delete a product.
-...
+  ...
 
 ### [Product Categories](#product-categories)
+
 - GET /api/category/: Get a list of all product categories.
 - GET /api/category/:id: Get details of a specific product category.
 - POST /api/category: Create a new product category.
 - PUT /api/category/:id: Update an existing product category.
 - DELETE /api/category/:id: Delete a product category.
-...
+  ...
 
 ### [Blogs](#blogs)
+
 - GET /api/blog: Get a list of all blogs.
 - GET /api/blogs/:id: Get details of a specific blog.
 - POST /api/blog: Create a new blog.
@@ -105,8 +125,7 @@ etc...
 - PUT /api/blog/likes: Update blog post likes.
 - PUT /api/blog/dislikes: Update blog post dislikes.
 - DELETE /api/blog/:id: Delete a blog.
-...
-
+  ...
 
 ## [Usage](#usage)
 
@@ -115,6 +134,7 @@ etc...
 - Refer to the API endpoints documentation above for more details on request payloads and response formats.
 
 ## [License](#license)
+
 This project is licensed under the MIT License.
 
 Feel free to create an issue if yout think there is a bug or an error.
